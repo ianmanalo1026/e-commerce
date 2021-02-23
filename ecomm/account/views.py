@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserSigninForm
 from django.contrib.auth import login, logout, authenticate
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic import CreateView, FormView, TemplateView
 
 
 class SignUpView(CreateView):
@@ -26,3 +26,11 @@ class SignInView(FormView):
                 return redirect(self.success_url)
         else:
             return render(request, self.template_name, {"form":self.form_class})
+
+class SignOutView(TemplateView):
+    template_name = "accounts/signout.html"
+    success_url = "/"
+    
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return render(request, 'accounts/signout.html')
