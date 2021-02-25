@@ -1,0 +1,11 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content%}
+{% for item in object_list%}
+{{item.title}}
+{{item.description}}
+{{item.price}}
+{{item.quality}}
+{{item.stored}}
+{% endfor %}
+{% endblock %}
