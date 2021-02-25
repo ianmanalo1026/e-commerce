@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserSigninForm
 from django.contrib.auth import login, logout, authenticate
@@ -25,7 +26,8 @@ class SignInView(FormView):
                 login(request, user)
                 return redirect(self.success_url)
         else:
-            return render(request, self.template_name, {"form":self.form_class})
+            msg = messages.warning(request, "Incorrect Username or Password!")
+            return render(request, self.template_name, {"form":self.form_class, 'message':msg})
 
 class SignOutView(TemplateView):
     template_name = "accounts/signout.html"
@@ -33,4 +35,4 @@ class SignOutView(TemplateView):
     
     def get(self, request, *args, **kwargs):
         logout(request)
-        return render(request, 'accounts/signout.html')
+        return render(request, 'account/signout.html')
