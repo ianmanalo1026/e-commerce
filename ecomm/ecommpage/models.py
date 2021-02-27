@@ -3,7 +3,6 @@ from django.conf import settings
 from django.shortcuts import reverse
 from django.utils.text import slugify
 
-
 CATEGORY_CHOICES = (
     ('C', 'Classic'),
     ('CB', 'Comic Book'),
@@ -26,15 +25,19 @@ class Item(models.Model):
     def __str__(self) -> str:
         return self.title
     
-    # def save(self, *args, **kwargs):
-    #     self.slug = slugify(self.title)
-    #     super(Item, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Item, self).save(*args, **kwargs)
     
     def get_absolute_url(self):
         return reverse("product", kwargs={"slug": self.slug})
     
     def get_add_to_cart_url(self):
-        return reverse("add_to_cart", kwargs={"slug": self.slug})
+        return reverse("add-to-cart", kwargs={
+            'slug': self.slug
+        })
+    
+
         
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,

@@ -11,7 +11,8 @@ class ItemListView(ListView):
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = "product.html"
+    template_name = "ecommpage/product.html"
+    
     
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -37,6 +38,8 @@ def add_to_cart(request, slug):
         order.items.add(order_item)
 
     return redirect("product", slug=slug)
+
+
 # def checkout(request):
 #     context = {}
 #     return render(request, 'ecommpage/checkout.html', context)
