@@ -1,0 +1,39 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<div class="container text-center">
+ <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Item</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for order_item in object.items.all %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{order_item.item.title}}</td>
+        <td>{{order_item.quantity}}</td>
+        <td>₱ {{order_item.item.price}}</td>
+        <td>₱ {{order_item.get_total_item_price}}</td>
+        <td>{{order_item.reduce_quantity}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="4"><strong>Order Total</strong></td>
+        <td><strong>₱ {{object.get_total}}</strong></td>
+      </tr>
+      <tr>
+        <td colspan="5">
+          <a class='btn btn-danger float-right ' href="/">Proceed</a>
+          <a class='btn btn-primary float-right ml-2' href="/">Continue Shopping</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
