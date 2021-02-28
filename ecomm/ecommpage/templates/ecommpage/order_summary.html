@@ -20,7 +20,7 @@
         <td>{{order_item.quantity}}</td>
         <td>₱ {{order_item.item.price}}</td>
         <td>₱ {{order_item.get_total_item_price}}</td>
-        <td>{{order_item.reduce_quantity}}</td>
+
       </tr>
       {% endfor %}
       <tr>
@@ -29,8 +29,8 @@
       </tr>
       <tr>
         <td colspan="5">
-          <a class='btn btn-danger float-right ' href="/">Proceed</a>
-          <a class='btn btn-primary float-right ml-2' href="/">Continue Shopping</a>
+          <a class='btn btn-danger float-end' href="/">Proceed</a>
+          <a class='btn btn-primary float-end ml-4' href="/">Continue Shopping</a>
         </td>
       </tr>
     </tbody>

@@ -2,19 +2,20 @@
 {% load static %}
 {% block content%}
 {% for item in object_list%}
-<div class="card" style="width: 18rem;">
-    <img src="{{ item.img.url }}" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h5>
-      <p class="card-text">{{item.description}}</p>
+<div class="container row">
+  <div class="col">
+    <div class="card" style="width: 18rem;">
+        <img src="{{ item.img.url }}" class="card-img-thumbnail" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h5>
+          <p class="card-text">{{item.description|truncatechars:50}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">₱ {{item.price}}</li>
+          <li class="list-group-item">Stock: {{item.item_quantity}}</li>
+        </ul>
     </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">{{item.price}}</li>
-      <li class="list-group-item">{{item.item_quantity}}</li>
-    </ul>
-    <div class="card-body">
-      <a href="#" class="card-link">Card link</a>
-    </div>
+  </div>
 </div>
 {% endfor %}
 {% endblock %}
