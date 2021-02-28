@@ -4,12 +4,12 @@ from django.shortcuts import reverse
 from django.utils.text import slugify
 
 CATEGORY_CHOICES = (
-    ('C', 'Classic'),
-    ('CB', 'Comic Book'),
-    ('F', 'Fantacy'),
-    ('FC', 'Fiction'),
-    ('E', 'Educational'),
-    ('M', 'Motivational')
+    ('Classic', 'Classic'),
+    ('Comic Book', 'Comic Book'),
+    ('Fantacy', 'Fantacy'),
+    ('Fiction', 'Fiction'),
+    ('Educational', 'Educational'),
+    ('Motivational', 'Motivational')
 )
 
 class Item(models.Model):
@@ -19,7 +19,7 @@ class Item(models.Model):
     stored = models.DateTimeField(auto_now_add=True)
     item_quantity = models.IntegerField(default=1)
     img = models.ImageField(upload_to='images/')
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=15)
     slug = models.SlugField(unique=True)
     
     def __str__(self) -> str:
