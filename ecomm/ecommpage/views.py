@@ -1,7 +1,8 @@
 from django.shortcuts import redirect, render ,get_object_or_404
 from django.utils import timezone
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Item, Order, OrderItem
+# from .forms import CheckOutForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -30,7 +31,23 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect('/')
-        
+ 
+ 
+#  class CheckOutView(LoginRequiredMixin, CreateView):
+#      form_class = CheckOutForm
+#      template = "ecommpage/checkout.html"
+     
+#      def post(self, *args, **kwargs):
+#          form = CheckOutForm(self.request.POST or None)
+#          try:
+#              order = Order.objects.get(user=self.request.user, ordered=False)
+#              if form.is_valid():
+#                  street_address = form.cleaned_data('street_address'),
+#                  provice = form.cleaned_data('provice'),
+#                  city = form.cleaned_data('city'),
+#                  country = form.cleaned_data('country'),
+#                  zip_code = form.cleaned_data('zip_code'),
+     
 
 @login_required
 def add_to_cart(request, slug):
@@ -75,9 +92,11 @@ def remove_from_cart(request, slug):
                 user=request.user,
                 ordered=False
             )[0]
-            
-            order.items.remove(order_item)
-            order_item.delete()
+            if order_item.quantity > 1:
+                order_item.quantity -= 1
+                order_item.save()
+            else:
+                order.items.remove(order_item)
             messages.warning(request, "This item was removed from your cart.")
             return redirect("product", slug=slug)
         else:

@@ -1,0 +1,13 @@
+{% extends 'account/base.html' %}
+{% block content%}
+{{object.user.first_name}}
+{{object.user.last_name}}
+{{object.phone_number}}
+{{object.photo}}
+
+{{object.street_address}}
+{{object.provice}}
+{{object.city}}
+{{object.country}}
+{{object.zip_code}}
+{% endblock %}

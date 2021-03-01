@@ -1,7 +1,8 @@
 from django import forms
+from django.forms import fields
+from .models import Profile
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-
 
 
 class UserRegisterForm(UserCreationForm):
@@ -23,6 +24,7 @@ class UserRegisterForm(UserCreationForm):
                 "email",
                 ]
 
+
 class UserSigninForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
@@ -33,3 +35,36 @@ class UserSigninForm(AuthenticationForm):
                     "username",
                     "password"
                  ]
+        
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.EmailField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    phone_number = forms.CharField(max_length=13, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    street_address = forms.CharField(max_length=300, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    provice = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    city = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    country = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    zip_code = forms.CharField(max_length=12, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    
+    def __init__(self, *args, **kw):
+        super(ProfileForm, self).__init__(*args, **kw)
+        self.fields['first_name'].initial = self.instance.user.first_name
+        self.fields['last_name'].initial = self.instance.user.last_name
+        self.fields['email'].initial = self.instance.user.email
+    
+    class Meta:
+        model = Profile
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+            "photo",
+            "street_address",
+            "provice",
+            "city",
+            "country",
+            "zip_code"
+        ]

@@ -2,11 +2,11 @@
 {% load static %}
 {% block content%}
 
-<div class="container justify-content-center">
+<div class="justify-content-center">
 <div class="row">
   {% for item in object_list%}
   <div class="col-sm-4 mb-5">
-    <div class="card shadow" style="width: 20rem;">
+    <div class="card shadow" style="width: 25rem;">
         <img src="{{ item.img.url }}" class="img-thumbnail" alt="...">
         <div class="card-body">
           <h5 class="card-title"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h5>

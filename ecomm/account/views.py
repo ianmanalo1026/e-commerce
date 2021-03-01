@@ -1,8 +1,19 @@
 from django.contrib import messages
+from django.http import request
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserSigninForm
+from .forms import (UserRegisterForm,
+                    UserSigninForm,
+                    ProfileForm)
+from django.contrib.auth.mixins import (LoginRequiredMixin, 
+                                        UserPassesTestMixin)
+from .models import Profile
 from django.contrib.auth import login, logout, authenticate
-from django.views.generic import CreateView, FormView, TemplateView
+from django.views.generic import (CreateView, 
+                                  FormView, 
+                                  TemplateView, 
+                                  DetailView, 
+                                  UpdateView
+                                  )
 
 
 class SignUpView(CreateView):
@@ -36,3 +47,27 @@ class SignOutView(TemplateView):
     def get(self, request, *args, **kwargs):
         logout(request)
         return render(request, 'account/signout.html')
+    
+
+
+class ProfileView(DetailView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = "account/profile.html"
+    success_url = "/"
+    
+class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    
+    model = Profile
+    template_name = "account/profileupdate.html"
+    form_class = ProfileForm
+    success_url = '/'
+    
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.user:
+            return True
+        return False
+
+        
+    
