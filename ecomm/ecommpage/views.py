@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render ,get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView
-from .models import Item, Order, OrderItem
-# from .forms import CheckOutForm
+from .models import BillingAddress, Item, Order, OrderItem
+from .forms import CheckOutForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -33,21 +33,34 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
             return redirect('/')
  
  
-#  class CheckOutView(LoginRequiredMixin, CreateView):
-#      form_class = CheckOutForm
-#      template = "ecommpage/checkout.html"
+class CheckOutView(LoginRequiredMixin, CreateView):
      
-#      def post(self, *args, **kwargs):
-#          form = CheckOutForm(self.request.POST or None)
-#          try:
-#              order = Order.objects.get(user=self.request.user, ordered=False)
-#              if form.is_valid():
-#                  street_address = form.cleaned_data('street_address'),
-#                  provice = form.cleaned_data('provice'),
-#                  city = form.cleaned_data('city'),
-#                  country = form.cleaned_data('country'),
-#                  zip_code = form.cleaned_data('zip_code'),
+     def get(self, *args, **kwargs):
+         form = CheckOutForm(self.request.POST or None)
+         context = {
+             'form': form
+         }
+         return render(self.request, 'checkout.html', context)
      
+     def post(self, *args, **kwargs):
+         form = CheckOutForm(self.request.POST or None)
+         if form.is_valid():
+            street_address = form.cleaned_data('street_address')
+            provice = form.cleaned_data('provice')
+            city = form.cleaned_data('city')
+            country = form.cleaned_data('country')
+            zip_code = form.cleaned_data('zip_code')
+            billing_address = BillingAddress(
+                user=self.request.user,
+                street_address=street_address,
+                provice=provice,
+                city=city,
+                country=country,
+                zip_code=zip_code,
+            )
+            messages.warning(self.request, "Failed Checkout")
+            return redirect('ecommpage:checkout')
+
 
 @login_required
 def add_to_cart(request, slug):

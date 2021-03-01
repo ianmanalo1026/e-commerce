@@ -1,7 +1,9 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.fields.related import ForeignKey
 from django.shortcuts import reverse
 from django.utils.text import slugify
+from django_countries.fields import CountryField
 
 CATEGORY_CHOICES = (
     ('Classic', 'Classic'),
@@ -61,8 +63,7 @@ class OrderItem(models.Model):
         return self.get_total_item_price()
     
     
-    
-    
+      
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
@@ -70,6 +71,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    billing_address = models.ForeignKey("BillingAddress", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.user.username
@@ -79,3 +81,17 @@ class Order(models.Model):
         for order_item in self.items.all():
             total += order_item.get_final_price()
         return total
+    
+    
+class BillingAddress(models.Model):
+        user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+        street_address = models.CharField(max_length=50)
+        provice = models.CharField(max_length=50)
+        city = models.CharField(max_length=50)
+        country = CountryField(multiple=False)
+        zip_code = models.CharField(max_length=50)
+        
+        def __str__(self):
+            return self.user
+        
