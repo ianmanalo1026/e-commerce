@@ -38,7 +38,7 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li class="nav-item">
-                    <a class="nav-link active" href=""><i class="far fa-id-card"></i> Profile</a>
+                    <a class="nav-link active" href="{% url 'account:profile' slug=user.profile.slug %}"><i class="far fa-id-card"></i> Profile</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link active" href="{% url 'account:signout' %}"><i class="fas fa-sign-out-alt"></i> Signout</a>
@@ -82,3 +82,4 @@
     -->
   </body>
 </html>
+

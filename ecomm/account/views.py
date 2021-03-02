@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import request
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import (UserRegisterForm,
                     UserSigninForm,
                     ProfileForm)
@@ -50,11 +50,17 @@ class SignOutView(TemplateView):
     
 
 
-class ProfileView(DetailView):
+class ProfileView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Profile
     form_class = ProfileForm
     template_name = "account/profile.html"
     success_url = "/"
+    
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.user:
+            return True
+        return False
     
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
