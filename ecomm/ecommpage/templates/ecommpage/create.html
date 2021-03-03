@@ -1,0 +1,15 @@
+{% extends 'account/base.html' %}
+{% block content%}
+<div class="container">
+    <div class="form-control w-50 mx-auto shadow">
+        <form method="POST" enctype="multipart/form-data">
+            <h1 class='my-3 text-center'>Sign Up</h1>
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit" class="btn btn-success my-3">Submit</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+

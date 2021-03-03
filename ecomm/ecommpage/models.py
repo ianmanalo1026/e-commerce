@@ -43,6 +43,17 @@ class Item(models.Model):
         return reverse("remove_from_cart", kwargs={
             'slug': self.slug
         })
+        
+    def get_add_single_item_to_cart_url(self):
+        return reverse("add_single_item_to_cart", kwargs={
+            'slug': self.slug
+        })
+    
+    def get_remove_single_item_from_cart_url(self):
+        return reverse("remove_single_item_from_cart", kwargs={
+            'slug': self.slug
+        })
+        
 
 
         
@@ -62,6 +73,8 @@ class OrderItem(models.Model):
     def get_final_price(self):
         return self.get_total_item_price()
     
+    def get_quantity(self):
+        return self.quantity
     
       
 class Order(models.Model):
@@ -71,7 +84,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
-    total_price = models.IntegerField(default=0)
+    total_price = models.FloatField(default=0)
 
     def __str__(self):
         return self.user.username
@@ -83,9 +96,9 @@ class Order(models.Model):
         return total
     
     def save(self, *args, **kwargs):
+        total = 0
         self.total_price = self.get_total()
-        return super().save(*args, **kwargs)  
-
+        return super().save(*args, **kwargs)
             
     
         

@@ -27,10 +27,23 @@
               <li class="nav-item">
                 <a class="nav-link active" href="{% url 'order-summary' %}"><i class="fas fa-shopping-cart"></i> Cart</a>
               </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle"></i> Admin
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'create' %}"><i class="far fa-id-card"></i>Create Item</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href=""><i class="fas fa-sign-out-alt"></i> Staff</a>
+                  </li>
+                </ul>
               {% if not user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link active" href="{% url 'account:signin' %}"><i class="fas fa-user"></i> Signin</a>
               </li>
+              
               {%else%}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,11 +54,16 @@
                     <a class="nav-link active" href="{% url 'account:profile' slug=user.profile.slug %}"><i class="far fa-id-card"></i> Profile</a>
                   </li>
                   <li class="nav-item">
+                    <a class="nav-link active" href=""><i class="fas fa-receipt"></i> History</a>
+                  </li>
+                  <li class="nav-item">
                     <a class="nav-link active" href="{% url 'account:signout' %}"><i class="fas fa-sign-out-alt"></i> Signout</a>
                   </li>
 
                   {% endif %}
+                  
                 </ul>
+
               </li>
 
             </ul>
