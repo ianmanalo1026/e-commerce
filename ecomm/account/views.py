@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.http import request
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import (UserRegisterForm,
                     UserSigninForm,
@@ -12,7 +11,8 @@ from django.views.generic import (CreateView,
                                   FormView, 
                                   TemplateView, 
                                   DetailView, 
-                                  UpdateView
+                                  UpdateView,
+                                  ListView
                                   )
 
 
@@ -76,4 +76,6 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return False
 
         
-    
+class StaffListView(ListView):
+    model = Profile
+    template_name = 'account/staff.html'

@@ -22,7 +22,7 @@ class Item(models.Model):
     item_quantity = models.IntegerField(default=1)
     img = models.ImageField(upload_to='images/')
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=15)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField()
     
     def __str__(self) -> str:
         return self.title
@@ -55,12 +55,10 @@ class Item(models.Model):
         })
         
 
-
-        
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                             on_delete=models.CASCADE)
-    item = models.OneToOneField(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     ordered = models.BooleanField(default=False)
     

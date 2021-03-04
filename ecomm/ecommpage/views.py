@@ -1,11 +1,11 @@
 from django.shortcuts import redirect, render ,get_object_or_404
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Item, Order, OrderItem
-from .forms import ItemCreateForm
+from .forms import ItemCreateForm, ItemUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
 
 class ItemListView(ListView):
@@ -19,10 +19,44 @@ class ItemDetailView(DetailView):
     template_name = "ecommpage/product.html"
     
 
-class ItemCreateView(CreateView):
+class ItemCreateView(LoginRequiredMixin, CreateView):
     form_class = ItemCreateForm
     template_name = "ecommpage/create.html"
     success_url = '/'
+    
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super(ItemCreateView, self).form_valid(form)
+    
+
+class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Item
+    form_class = ItemUpdateForm
+    template_name = "ecommpage/create.html"
+    success_url = '/'
+    
+    def test_func(self):
+        item = self.get_object()
+        if self.request.user == item.creator:
+            return True
+        return False
+    
+
+class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    
+    model = Item
+    template_name = "ecommpage/delete.html"
+    success_url = "/"
+    
+    def get_object(self):
+        slug = self.kwargs.get("slug")
+        return get_object_or_404(Item, slug=slug)
+
+    def test_func(self):
+        item = self.get_object()
+        if self.request.user == item.creator:
+            return True
+        return False
     
     
 class OrderSummaryView(LoginRequiredMixin, DetailView):
@@ -55,6 +89,7 @@ def add_to_cart(request, slug):
         if order.items.filter(item__slug=item.slug).exists():
             order_item.quantity += 1
             order_item.save()
+
             order.save()
             messages.success(request, "This item was updated to your cart.")
         else:
@@ -63,7 +98,7 @@ def add_to_cart(request, slug):
             order.save()
     else:
         ordered_date = timezone.now()
-        order = Order.objects.create(
+        order = Order.objects.create(id=item.id,
             user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
         order.save()
@@ -167,3 +202,5 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.warning(request, "You do not have an active order")
         return redirect("order-summary", slug=slug)
+    
+    

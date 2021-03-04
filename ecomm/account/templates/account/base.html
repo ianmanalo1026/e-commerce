@@ -27,6 +27,7 @@
               <li class="nav-item">
                 <a class="nav-link active" href="{% url 'order-summary' %}"><i class="fas fa-shopping-cart"></i> Cart</a>
               </li>
+              {% if user.is_staff %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-user-circle"></i> Admin
@@ -36,9 +37,10 @@
                     <a class="nav-link active" href="{% url 'create' %}"><i class="far fa-id-card"></i>Create Item</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" href=""><i class="fas fa-sign-out-alt"></i> Staff</a>
+                    <a class="nav-link active" href="{% url 'account:staff' %}"><i class="fas fa-sign-out-alt"></i> Staff</a>
                   </li>
                 </ul>
+              {% endif %}
               {% if not user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link active" href="{% url 'account:signin' %}"><i class="fas fa-user"></i> Signin</a>
@@ -100,4 +102,3 @@
     -->
   </body>
 </html>
-

@@ -1,10 +1,11 @@
 {% extends 'account/base.html' %}
 {% load static %}
 {% block content%}
-
+{% csrf_token %}
 <div class="justify-content-center">
 <div class="row">
   {% for item in object_list%}
+  {% if item.item_quality != 0 %}
   <div class="col-sm-4 mb-5">
     <div class="card shadow" style="width: 25rem;">
         <img src="{{ item.img.url }}" class="img-thumbnail" alt="...">
@@ -20,6 +21,8 @@
         </ul>
     </div>
   </div>
+  {%else %}
+  {% endif %}
   {% endfor %}
 </div>
 </div>
