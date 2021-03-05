@@ -4,6 +4,7 @@ from django.db.models.fields.related import ForeignKey
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from django_countries.fields import CountryField
+import uuid
 
 CATEGORY_CHOICES = (
     ('Classic', 'Classic'),
@@ -80,7 +81,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
+    ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     total_price = models.FloatField(default=0)
 
@@ -93,10 +94,6 @@ class Order(models.Model):
             total += order_item.get_final_price()
         return total
     
-    def save(self, *args, **kwargs):
-        total = 0
-        self.total_price = self.get_total()
-        return super().save(*args, **kwargs)
             
     
         
