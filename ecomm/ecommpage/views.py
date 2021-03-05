@@ -89,7 +89,6 @@ def add_to_cart(request, slug):
         if order.items.filter(item__slug=item.slug).exists():
             order_item.quantity += 1
             order_item.save()
-
             order.save()
             messages.success(request, "This item was updated to your cart.")
         else:
@@ -97,9 +96,9 @@ def add_to_cart(request, slug):
             order.items.add(order_item)
             order.save()
     else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(id=item.id,
-            user=request.user, ordered_date=ordered_date)
+        final_price = OrderItem.objects.filter(user=request.user, ordered=False).annotate()
+        order = Order.objects.create(
+            user=request.user)
         order.items.add(order_item)
         order.save()
         messages.success(request, "This item was added to your cart.")
@@ -163,9 +162,8 @@ def add_single_item_to_cart(request, slug):
                 order.items.add(order_item)
                 order.save()
         else:
-            ordered_date = timezone.now()
-            order = Order.objects.create(
-                user=request.user, ordered_date=ordered_date)
+            order, created = Order.objects.get_or_create(
+                user=request.user)
             order.items.add(order_item)
             order.save()
             messages.success(request, "This item was added to your cart.")
@@ -202,5 +200,4 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.warning(request, "You do not have an active order")
         return redirect("order-summary", slug=slug)
-    
     
