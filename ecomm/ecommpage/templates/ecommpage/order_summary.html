@@ -41,15 +41,15 @@
   </table>
 </div>
 
-  <!-- Set up a container element for the button -->
-  <div id="paypal-button-container"></div>
+    <div class="container justify-content-center">
+      <!-- Set up a container element for the button -->
+      <div id="paypal-button-container"></div>
 
-  <!-- Include the PayPal JavaScript SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AXbPL2lRLTobw-HLnY0VfsSaHhpLeNwa0cH0e-EqEsVmlZFHdlaD7Gqqznn-pQDFDPBtI6xWmMGkmjct&currency=USD"></script>
-
-  <script>
-
-      function getCookie(name) {
+      <!-- Include the PayPal JavaScript SDK -->
+      <script src="https://www.paypal.com/sdk/js?client-id=AXbPL2lRLTobw-HLnY0VfsSaHhpLeNwa0cH0e-EqEsVmlZFHdlaD7Gqqznn-pQDFDPBtI6xWmMGkmjct&currency=PHP"></script>
+  
+      <script>
+        function getCookie(name) {
           let cookieValue = null;
           if (document.cookie && document.cookie !== '') {
               const cookies = document.cookie.split(';');
@@ -66,55 +66,54 @@
       }
       const csrftoken = getCookie('csrftoken');
 
-      var total = '{{object.get_total_item_price}}'
-      var productID = '{{object.id}}'
+        var total = '{{object.get_total}}'
+        var orderID = '{{object.id}}'
 
-      function completeOrder(){
-          var url = "{% url 'store' %}"
+        function completeOrder(){
+          var url = "{% url 'complete' %}"
 
           fetch(url, {
-              method: 'POST',
-              headers: {
-                  'Content-type': 'application/json',
-                  'X-CSRFToken': csrftoken,
-              }
-              body:JSON.stringify({'productID':productID})
-          }
+            method: 'POST',
+            headers:{
+              'Content-type' : "application/json",
+              'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({'orderID':orderID})
+          })
+        }
 
-          )
-      }
-      // Render the PayPal button into #paypal-button-container
-      paypal.Buttons({
-
-          style: {
+          // Render the PayPal button into #paypal-button-container
+          paypal.Buttons({
+  
+            style: {
               color:  'blue',
               shape:  'pill',
               label:  'pay',
               height: 40
           },
-
-          // Set up the transaction
-          createOrder: function(data, actions) {
-              return actions.order.create({
-                  purchase_units: [{
-                      amount: {
-                          value: total
-                      }
-                  }]
-              });
-          },
-
-          // Finalize the transaction
-          onApprove: function(data, actions) {
-              return actions.order.capture().then(function(details) {
-                  // Show a success message to the buyer
-                  completeOrder()
-                  alert('Transaction completed by ' + details.payer.name.given_name + '!');
-              });
-          }
-
-
-      }).render('#paypal-button-container');
-  </script>
+              // Set up the transaction
+              createOrder: function(data, actions) {
+                  return actions.order.create({
+                      purchase_units: [{
+                          amount: {
+                              value: total
+                          }
+                      }]
+                  });
+              },
+  
+              // Finalize the transaction
+              onApprove: function(data, actions) {
+                  return actions.order.capture().then(function(details) {
+                      // Show a success message to the buyer
+                      completeOrder()
+                      alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                  });
+              }
+  
+  
+          }).render('#paypal-button-container');
+      </script>
+    </div>
 
 {% endblock %}

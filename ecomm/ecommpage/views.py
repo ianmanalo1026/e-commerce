@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render ,get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Item, Order, OrderItem
+from .models import Item, Order, OrderItem, OrderComplete
 from .forms import ItemCreateForm, ItemUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.views import FilterView
 from .filters import ItemFilter
+from django.http import JsonResponse
+import json
 
 class ItemListView(FilterView):
     model = Item
@@ -191,4 +193,13 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.warning(request, "You do not have an active order")
         return redirect("order-summary", slug=slug)
+
+def paymentComplete(request):
+    body = json.loads(request.body)
+    product = Order.objects.get(id=body['orderID'])
+    print(body)
+    OrderComplete.objects.create(
+        order=product, total_price=body['total']
+    )
+    return JsonResponse('Payment Complete', safe=False)
     
