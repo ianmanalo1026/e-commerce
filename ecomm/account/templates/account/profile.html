@@ -1,13 +1,97 @@
 {% extends 'account/base.html' %}
 {% block content%}
-{{object.user.first_name}}
+<div class="container emp-profile">
+    <form method="post">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-img">
+                    <img src="{{object.photo.url}}" alt=""/>
+ 
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="profile-head">
+                            <h5>
+                                {{object.user.first_name}}
+                            </h5>
+                            <h6>
+                                {{object.street_address}}, {{object.provice}}, {{object.city}}, {{object.country}}, {{object.zip_code}}
+                            </h6>
+                    
+                </div>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'account:update' slug=user.profile.slug %}" class="btn btn-secondary">Update</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-work">
+
+                </div>
+            </div>
+            <div class="col-md-8">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>User Id</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{object.user.username}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{object.user.first_name}} {{object.user.last_name}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Email</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{object.user.email}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Phone</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{object.phone_number}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Address</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{object.street_address}}, {{object.provice}}, {{object.city}}, {{object.country}}, {{object.zip_code}}</p>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+    </form>           
+</div>
+
+{% endblock %}
+
 {{object.user.last_name}}
-{{object.phone_number}}
+
+
 {{object.photo}}
 
-{{object.street_address}}
-{{object.provice}}
-{{object.city}}
-{{object.country}}
-{{object.zip_code}}
-{% endblock %}
+
+
+
+

@@ -46,10 +46,9 @@ class SignOutView(TemplateView):
     
     def get(self, request, *args, **kwargs):
         logout(request)
-        return render(request, 'account/signout.html')
+        messages.success(request, "You are successfully logged out!")
+        return redirect('/')
     
-
-
 class ProfileView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Profile
     form_class = ProfileForm

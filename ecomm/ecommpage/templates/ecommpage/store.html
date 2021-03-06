@@ -1,31 +1,71 @@
 {% extends 'account/base.html' %}
 {% load static %}
 {% block content%}
+
+<div class="container my-3">
+  <div class="row">
+
+
+  <div class="container justify-content-center my-5">
+  <form action="" method='GET'>
+    {% csrf_token %}
+    {{filter.form.as_p}}
+    <input type="submit" />
+  </form>
+</div>
+  <div class="row">
+
+    {% for item in object_list%}
+    {% if item.item_quality != 0 %}
+
+      <div class="col-lg-4 col-md-6 offset-md-0 offset-sm-1 col-sm-10 offset-sm-1 my-lg-0 my-2">
+          <div class="card my-3"> <img class="card-img-top" src="{{ item.img.url }}">
+              <div class="card-body">
+                  <div class="d-flex align-items-start justify-content-between">
+                      <div class="d-flex flex-column">
+                          <div class="h5 font-weight-bold"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></div>
+                          <div class="h6 font-weight-bold">{{item.category}}</a></div>
+                          <div class="text-muted">₱ {{item.price|floatformat:2}}</div>
+                          <hr>
+                          <div class="p font-weight-bold">{{item.description|truncatechars:100}}</a></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+      </div>
+      
+      {%else %}
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}
+
+
+
+
+
 {% csrf_token %}
-<div class="justify-content-center">
+<div class="container justify-content-center">
 <div class="row">
-  {% for item in object_list%}
-  {% if item.item_quality != 0 %}
+
   <div class="col-sm-4 mb-5">
     <div class="card shadow" style="width: 25rem;">
-        <img src="{{ item.img.url }}" class="img-thumbnail" alt="...">
+        <img src="" class="img-thumbnail" alt="...">
         <div class="card-body">
           <h5 class="card-title"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h5>
           <p class="card-text">{{item.description|truncatechars:50}}</p>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><strong>Category: {{item.category}}</strong></li>
-          <li class="list-group-item"><strong>₱ {{item.price|floatformat:2}}</strong></li>
+          <li class="list-group-item"><strong></strong></li>
           <li class="list-group-item"><strong>Stock: {{item.item_quantity}}</strong></li>
           <li class="list-group-item"><strong>Ratings</strong></li>
         </ul>
     </div>
   </div>
-  {%else %}
-  {% endif %}
-  {% endfor %}
+
 </div>
 </div>
-{% endblock %}
-
-

@@ -1,25 +1,102 @@
 {% extends 'account/base.html' %}
 {% block content %}
 {% csrf_token %}
-{{object.title}}
-{{object.description}}
-{{object.item_quantity}}
-{{object.category}}
-{{object.price}}
-{% if object.item_quantity %}
-<a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p" disabled>
-  <i class="fas fa-shopping-cart ml-1"></i> Add to cart</a>
-  {% endif %}
-<a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
-  Remove from cart
-</a>
+<!--Section: Block Content-->
+<section class="mb-5 container">
 
-{% if user.is_staff %}
-  <a href="{% url 'update' object.slug %}" class="btn btn-danger btn-md my-0 p">
-    Update
-  </a>
-  <a href="{% url 'delete' object.slug %}" class="btn btn-danger btn-md my-0 p">
-    delete
-  </a>
-  {%endif%}
+  <div class="row">
+    <div class="col-md-6 mb-4 mb-md-0">
+
+      <div id="mdb-lightbox-ui"></div>
+
+      <div class="mdb-lightbox">
+
+        <div class="row product-gallery mx-1">
+
+          <div class="col-12 mb-0">
+            <figure class="view overlay rounded z-depth-1 main-img">
+                <img src="{{ object.img.url }}"
+                  class="img-fluid z-depth-1">
+              </a>
+            </figure>
+            
+            </figure>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div class="col-3">
+                <div class="view overlay rounded z-depth-1 gallery-item">
+                  <div class="mask rgba-white-slight"></div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="view overlay rounded z-depth-1 gallery-item">
+                  <div class="mask rgba-white-slight"></div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="view overlay rounded z-depth-1 gallery-item">
+                  
+
+                  <div class="mask rgba-white-slight"></div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="view overlay rounded z-depth-1 gallery-item">
+
+
+                  <div class="mask rgba-white-slight"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="col-md-6 mt-5">
+
+      <h5>{{object.title}}</h5>
+      <p class="mb-2 text-muted text-uppercase small">{{object.category}}</p>
+
+      <p><span class="mr-1"><strong>₱ {{object.price}}</strong></span></p>
+      <div class="table-responsive">
+        <table class="table table-sm table-borderless mb-0">
+          <tbody>
+            <tr>
+              <th class="pl-0 w-25" scope="row"><strong>Stock:</strong></th>
+              <td>{{object.item_quantity}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      <p class="pt-1">{{object.description}}</p>
+      
+      <hr>
+      {% if object.item_quantity %}
+      <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p" disabled>
+        <i class="fas fa-shopping-cart ml-1"></i> Add to cart</a>
+        {% endif %}
+      <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
+        Remove from cart
+      </a>
+      
+      {% if user.is_staff %}
+        <a href="{% url 'update' object.slug %}" class="btn btn-danger btn-md my-0 p">
+          Update
+        </a>
+        <a href="{% url 'delete' object.slug %}" class="btn btn-danger btn-md my-0 p">
+          delete
+        </a>
+        {%endif%}
+    </div>
+  </div>
+
+</section>
+<!--Section: Block Content-->
 {% endblock %}
+
+
+

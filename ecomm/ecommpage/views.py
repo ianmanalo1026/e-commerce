@@ -1,5 +1,4 @@
 from django.shortcuts import redirect, render ,get_object_or_404
-from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Item, Order, OrderItem
 from .forms import ItemCreateForm, ItemUpdateForm
@@ -7,12 +6,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters.views import FilterView
+from .filters import ItemFilter
 
-class ItemListView(ListView):
+class ItemListView(FilterView):
     model = Item
     template_name = 'ecommpage/store.html'
-    paginate_by = 10
+    filterset_class = ItemFilter
     
+
+class IndexListView(ListView):
+    model = Item
+    template_name = 'ecommpage/index.html'
+    paginate_by = 3
+
 
 class ItemDetailView(DetailView):
     model = Item
@@ -24,25 +31,16 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     template_name = "ecommpage/create.html"
     success_url = '/'
     
-    def form_valid(self, form):
-        form.instance.creator = self.request.user
-        return super(ItemCreateView, self).form_valid(form)
     
 
-class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ItemUpdateView(LoginRequiredMixin, UpdateView):
     model = Item
     form_class = ItemUpdateForm
     template_name = "ecommpage/create.html"
     success_url = '/'
     
-    def test_func(self):
-        item = self.get_object()
-        if self.request.user == item.creator:
-            return True
-        return False
-    
 
-class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ItemDeleteView(LoginRequiredMixin, DeleteView):
     
     model = Item
     template_name = "ecommpage/delete.html"
@@ -52,11 +50,6 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         slug = self.kwargs.get("slug")
         return get_object_or_404(Item, slug=slug)
 
-    def test_func(self):
-        item = self.get_object()
-        if self.request.user == item.creator:
-            return True
-        return False
     
     
 class OrderSummaryView(LoginRequiredMixin, DetailView):
@@ -73,7 +66,6 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
             return redirect('/')
  
  
-
 @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -96,7 +88,6 @@ def add_to_cart(request, slug):
             order.items.add(order_item)
             order.save()
     else:
-        final_price = OrderItem.objects.filter(user=request.user, ordered=False).annotate()
         order = Order.objects.create(
             user=request.user)
         order.items.add(order_item)

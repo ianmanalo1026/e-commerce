@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (
+from .views import (IndexListView,
                     ItemListView, 
                     ItemDetailView,
                     OrderSummaryView,
@@ -12,7 +12,8 @@ from .views import (
 
 
 urlpatterns = [
-    path('', ItemListView.as_view(), name="store"),
+    path('', IndexListView.as_view(), name="store"),
+    path('store', ItemListView.as_view(), name="store"),
     path('create/', ItemCreateView.as_view(), name="create"),
     path('update/<slug>/', ItemUpdateView.as_view(), name='update'),
     path('delete/<slug>/', ItemDeleteView.as_view(), name='delete'),
