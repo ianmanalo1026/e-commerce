@@ -14,6 +14,8 @@ CATEGORY_CHOICES = (
     ('Educational', 'Educational'),
     ('Motivational', 'Motivational')
 )
+def get_upload_path(instance, filename):
+    return 'Items/{0}/{1}'.format(instance.title, filename)
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -21,7 +23,7 @@ class Item(models.Model):
     price = models.FloatField()
     stored = models.DateTimeField(auto_now_add=True)
     item_quantity = models.IntegerField(default=1)
-    img = models.ImageField(upload_to='images/')
+    img = models.ImageField(upload_to=get_upload_path)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=15)
     slug = models.SlugField()
     

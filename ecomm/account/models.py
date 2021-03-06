@@ -4,6 +4,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.text import slugify
 from django.urls import reverse
 
+def get_upload_path(instance, filename):
+    return 'Profile/{0}/{1}'.format(instance.user.username, filename)
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                             on_delete=models.CASCADE)
@@ -14,7 +17,7 @@ class Profile(models.Model):
     city = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     zip_code = models.CharField(max_length=10)
-    photo = models.ImageField(upload_to=None)
+    photo = models.ImageField(upload_to=get_upload_path )
     slug = models.SlugField()
     
     

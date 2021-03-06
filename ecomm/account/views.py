@@ -49,17 +49,11 @@ class SignOutView(TemplateView):
         messages.success(request, "You are successfully logged out!")
         return redirect('/')
     
-class ProfileView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ProfileView(LoginRequiredMixin, DetailView):
     model = Profile
-    form_class = ProfileForm
     template_name = "account/profile.html"
     success_url = "/"
     
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
-            return True
-        return False
     
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
