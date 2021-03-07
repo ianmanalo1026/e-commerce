@@ -78,7 +78,7 @@
               'Content-type' : "application/json",
               'X-CSRFToken': csrftoken,
             },
-            body: JSON.stringify({'orderID':orderID})
+            body: JSON.stringify({'orderID':orderID, 'total':total})
           })
         }
 

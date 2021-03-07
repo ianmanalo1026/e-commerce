@@ -4,7 +4,7 @@ from django.db.models.fields.related import ForeignKey
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from django_countries.fields import CountryField
-import uuid
+
 
 CATEGORY_CHOICES = (
     ('Classic', 'Classic'),
@@ -85,6 +85,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
+    total_price = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -95,13 +96,5 @@ class Order(models.Model):
             total += order_item.get_final_price()
         return total
     
-    
-class OrderComplete(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                            on_delete=models.CASCADE)
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
-    total = models.FloatField()
-
-            
     
         

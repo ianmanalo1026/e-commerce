@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render ,get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Item, Order, OrderItem, OrderComplete
+from .models import Item, Order, OrderItem
 from .forms import ItemCreateForm, ItemUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -65,8 +65,17 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
             return render(self.request, 'ecommpage/order_summary.html', context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
-            return redirect('/')
- 
+            return redirect('store')
+
+class HistoryView(ListView):
+    model = Order
+    template_name = 'ecommpage/history.html'
+    context_object_name  = 'object'
+    
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user, ordered=True)
+    
+    
  
 @login_required
 def add_to_cart(request, slug):
@@ -119,6 +128,7 @@ def remove_from_cart(request, slug):
                 order.save()
             else:
                 order.items.remove(order_item)
+                order_item.delete()
                 order.save()
             messages.warning(request, "This item was removed from your cart.")
             return redirect("product", slug=slug)
@@ -196,10 +206,12 @@ def remove_single_item_from_cart(request, slug):
 
 def paymentComplete(request):
     body = json.loads(request.body)
-    product = Order.objects.get(id=body['orderID'])
-    print(body)
-    OrderComplete.objects.create(
-        order=product, total_price=body['total']
-    )
-    return JsonResponse('Payment Complete', safe=False)
+    orderitem = OrderItem.objects.get(user=request.user, ordered=False)
+    order = Order.objects.get(id=body['orderID'])
+    orderitem.ordered = True
+    order.ordered =True
+    order.total_price = body['total']
+    orderitem.save()
+    order.save()
+    return JsonResponse('Payment Complete', safe=False), redirect('store')
     

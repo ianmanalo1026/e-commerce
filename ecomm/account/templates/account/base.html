@@ -15,7 +15,7 @@
     <section class="Navbar mb-5">
     <nav class="navbar navbar-expand-lg navbar-light bg-light ">
         <div class="container">
-          <a class="navbar-brand" href="#">BookStore</a>
+          <a class="navbar-brand" href="{% url 'index' %}">BookStore</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -61,19 +61,15 @@
                   <li class="nav-item">
                     <a class="nav-link active" href="{% url 'account:signout' %}"><i class="fas fa-sign-out-alt"></i> Signout</a>
                   </li>
-
                   {% endif %}
-                  
                 </ul>
-
               </li>
-
             </ul>
           </div>
         </div>
       </nav>
     </section>
-<div class="container">
+  <div class="container">
     {% if messages %}
         {% for message in messages %}
         <div class="container-fluid text-center alert alert-{{ message.tags }}" role="alert">
@@ -82,12 +78,34 @@
         {% endfor %}
     {% endif %}
   </div>  
+    
     <section class="content">
         {% block content %}{% endblock %}
 
     </section>
 
     <section class="footer">
+      <!-- footer -->
+    <footer class="bg-dark pt-3">
+      <div class="container">
+        <div class="row pb-3">
+          <div class="col text-center">
+            <div class="mb-2">
+              <a class="mx-sm-4 mx-2"><i class="fab fa-python fa-2x"></i></a>
+              <a href="#" class="mx-sm-4 mx-2"><i class="fab fa-paypal fa-2x"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+        </div>
+        <div class="row">
+          <div class="col text-light text-center">
+            <p>&copy; Copyright 2021. Made by Ian Manalo</p>
+          </div>
+        </div>
+      </div>
+    </footer>
 
     </section>
 
