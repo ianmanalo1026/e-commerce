@@ -3,21 +3,24 @@
 {% block content%}
 
 <div class="container my-3">
+  <div class="container justify-content-center my-2">
+        <form method='GET'>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-4">
+            {{filter.form.title}}
+          </div>
+          <div class="my-2">
+            <small><h5>{{filter.form.category}}</h5></small>
+          </div>
+          <div>
+            <button class="btn btn-outline-primary mt-" type="submit">Search</button>
+          </div>
+        </div>
+        </form>
   <div class="row">
-
-
-  <div class="container justify-content-center my-5">
-  <form action="" method='GET'>
-    {% csrf_token %}
-    {{filter.form.as_p}}
-    <input type="submit" />
-  </form>
-</div>
-  <div class="row">
-
     {% for item in object_list%}
     {% if item.item_quality != 0 %}
-
       <div class="col-lg-4 col-md-6 offset-md-0 offset-sm-1 col-sm-10 offset-sm-1 my-lg-0 my-2">
           <div class="card my-3"> <img class="card-img-top" src="{{ item.img.url }}">
               <div class="card-body">
@@ -32,40 +35,29 @@
                   </div>
               </div>
           </div>
-          
       </div>
-      
-      {%else %}
       {% endif %}
       {% endfor %}
     </div>
   </div>
-
+  <div class="justify-content-center pagination">
+    <span class="step-links my-2">
+      <div>
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="h5"><i class="fas fa-backward"></i> first</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="h5">previous</a>
+        {% endif %}
+      </div>
+        <div class="text-center">
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="h5"><i class="fas fa-caret-left"></i> next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="h5">last <i class="fas fa-caret-right"></i></a>
+        </div>
+        {% endif %}
+    </span>
+  </strong>
+</div>
 {% endblock %}
 
 
 
-
-
-{% csrf_token %}
-<div class="container justify-content-center">
-<div class="row">
-
-  <div class="col-sm-4 mb-5">
-    <div class="card shadow" style="width: 25rem;">
-        <img src="" class="img-thumbnail" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h5>
-          <p class="card-text">{{item.description|truncatechars:50}}</p>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Category: {{item.category}}</strong></li>
-          <li class="list-group-item"><strong></strong></li>
-          <li class="list-group-item"><strong>Stock: {{item.item_quantity}}</strong></li>
-          <li class="list-group-item"><strong>Ratings</strong></li>
-        </ul>
-    </div>
-  </div>
-
-</div>
-</div>

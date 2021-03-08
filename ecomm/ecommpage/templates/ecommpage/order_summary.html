@@ -1,8 +1,10 @@
 {% extends 'account/base.html' %}
 
 {% block content %}
-
-<div class="container text-center">
+<div class="container">
+<div class="row">
+<div class="col-6 text-center">
+  
  <table class="table table-hover">
     <thead>
       <tr>
@@ -41,7 +43,7 @@
   </table>
 </div>
 
-    <div class="container justify-content-center">
+    <div class="col-6 container justify-content-center mt-5">
       <!-- Set up a container element for the button -->
       <div id="paypal-button-container"></div>
 
@@ -108,12 +110,15 @@
                       // Show a success message to the buyer
                       completeOrder()
                       alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                      window.location.reload();
                   });
               }
   
   
           }).render('#paypal-button-container');
+          
       </script>
     </div>
-
+  </div>
+</div>
 {% endblock %}

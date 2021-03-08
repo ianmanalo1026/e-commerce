@@ -15,6 +15,7 @@ class ItemListView(FilterView):
     model = Item
     template_name = 'ecommpage/store.html'
     filterset_class = ItemFilter
+    paginate_by = 6
     
 
 class IndexListView(ListView):
@@ -66,15 +67,7 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect('store')
-
-class HistoryView(ListView):
-    model = Order
-    template_name = 'ecommpage/history.html'
-    context_object_name  = 'object'
-    
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user, ordered=True)
-    
+   
     
  
 @login_required
@@ -90,10 +83,14 @@ def add_to_cart(request, slug):
         order = order_qs[0]
         # check if the order item is in the order
         if order.items.filter(item__slug=item.slug).exists():
-            order_item.quantity += 1
-            order_item.save()
-            order.save()
-            messages.success(request, "This item was updated to your cart.")
+            if item.item_quantity <= order_item.quantity:
+                messages.warning(request, "Out of Stock")
+                return redirect("product", slug=slug)
+            else:
+                order_item.quantity += 1
+                order_item.save()
+                order.save()
+                messages.success(request, "This item was updated to your cart.")
         else:
             messages.success(request, "This item was added to your cart.")
             order.items.add(order_item)
@@ -128,6 +125,7 @@ def remove_from_cart(request, slug):
                 order.save()
             else:
                 order.items.remove(order_item)
+                order.delete()
                 order_item.delete()
                 order.save()
             messages.warning(request, "This item was removed from your cart.")
@@ -208,10 +206,17 @@ def paymentComplete(request):
     body = json.loads(request.body)
     orderitem = OrderItem.objects.get(user=request.user, ordered=False)
     order = Order.objects.get(id=body['orderID'])
+    for order_item in order.items.all():
+        print(order_item.item.item_quantity)
     orderitem.ordered = True
     order.ordered =True
     order.total_price = body['total']
     orderitem.save()
     order.save()
-    return JsonResponse('Payment Complete', safe=False), redirect('store')
-    
+    messages.success(request, "Order has been processed!")
+    return JsonResponse('Payment Complete', safe=False)
+
+
+def history(request):
+    order = Order.objects.filter(user=request.user, ordered=True)
+    return render(request, 'ecommpage/history.html', {'order':order})
