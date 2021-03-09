@@ -1,0 +1,41 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content%}
+<div class="container">
+    <h5>Name: {{object.user.first_name}} {{object.user.last_name}}</h5>
+    <h5>Date: </h5>
+    <h5>Shipping Address: {{object.shipping_address}}</h5>
+
+<table class="table table-hover text-center">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Item</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+
+      </tr>
+    </thead>
+    <tbody>
+        {% for order_item in object.items.all %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{order_item.item.title}}</td>
+        <td>{{order_item.quantity}}</td>
+        <td>₱ {{order_item.item.price}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="3"><strong>Order Total</strong></td>
+        <td><strong>₱ {{object.total_price}}</strong></td>
+      </tr>
+      <tr>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+</div>
+
+
+

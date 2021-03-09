@@ -1,7 +1,7 @@
 {% extends 'account/base.html' %}
 {% load static %}
 {% block content%}
-{%for order_item in order.items.all %}
-{{order_item.items.price}}
+{% for item in object_list%}
+<a href="{{ order.get_absolute_url }}">{{item}}</a>
 {% endfor %}
 {% endblock %}

@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.db.models.fields.related import ForeignKey
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.utils.text import slugify
 from django_countries.fields import CountryField
+from account.models import Profile
+import random
 
 
 CATEGORY_CHOICES = (
@@ -14,8 +16,19 @@ CATEGORY_CHOICES = (
     ('Educational', 'Educational'),
     ('Motivational', 'Motivational')
 )
+
+PAYMENT_CHOICES = (
+    ('Paypal', 'Paypal'),
+    ('Cash','Cash')
+)
+
+    
+
 def get_upload_path(instance, filename):
     return 'Items/{0}/{1}'.format(instance.title, filename)
+
+def create_new_ref_number():
+      return str(random.randint(1000000000, 9999999999))
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -82,13 +95,18 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
-    start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     total_price = models.FloatField(null=True, blank=True)
+    shipping_address = models.CharField(max_length=250)
+    reference_number = models.CharField(max_length=10, null=True, blank=True, default=create_new_ref_number())
+    
+    def get_absolute_url(self):
+        return reverse("history-detail", kwargs={"pk": self.pk})
+    
 
     def __str__(self):
-        return self.user.username
+        return self.reference_number
     
     def get_total(self):
         total = 0
@@ -97,4 +115,14 @@ class Order(models.Model):
         return total
     
     
-        
+class ShippingAddress(models.Model):
+    user = models.ForeignKey(Profile,
+                             on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=300)
+    province = models.CharField(max_length=300)
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return self.user

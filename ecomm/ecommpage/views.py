@@ -1,12 +1,19 @@
 from django.shortcuts import redirect, render ,get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (ListView, 
+                                  DetailView, 
+                                  CreateView, 
+                                  UpdateView, 
+                                  DeleteView)
 from .models import Item, Order, OrderItem
-from .forms import ItemCreateForm, ItemUpdateForm
+from .forms import (ItemCreateForm, 
+                    ItemUpdateForm, 
+                    ShippingAddressForm)
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.views import FilterView
+from account.models import Profile
 from .filters import ItemFilter
 from django.http import JsonResponse
 import json
@@ -35,7 +42,6 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     success_url = '/'
     
     
-
 class ItemUpdateView(LoginRequiredMixin, UpdateView):
     model = Item
     form_class = ItemUpdateForm
@@ -52,9 +58,7 @@ class ItemDeleteView(LoginRequiredMixin, DeleteView):
     def get_object(self):
         slug = self.kwargs.get("slug")
         return get_object_or_404(Item, slug=slug)
-
-    
-    
+      
 class OrderSummaryView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
@@ -67,9 +71,28 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect('store')
-   
+        
+class HistoryListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = "ecommpage/history.html"
+    success_url = "/"
     
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user, ordered=True)
+    
+    
+class HistoryDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = "ecommpage/history_detail.html"
+    success_url = "/"
+    
+    def get_queryset(self):
+        order = Order.objects.filter(user=self.request.user, ordered=True)
+        profile = Profile.objects.filter(user=self.request.profile.user)
+        context = {'order':order, 'profile':profile}
+        return render(self.request, self.template_name, context)
  
+    
 @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -103,6 +126,7 @@ def add_to_cart(request, slug):
         messages.success(request, "This item was added to your cart.")
     return redirect("product", slug=slug)
 
+
 @login_required
 def remove_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -125,7 +149,6 @@ def remove_from_cart(request, slug):
                 order.save()
             else:
                 order.items.remove(order_item)
-                order.delete()
                 order_item.delete()
                 order.save()
             messages.warning(request, "This item was removed from your cart.")
@@ -169,6 +192,7 @@ def add_single_item_to_cart(request, slug):
             order.save()
             messages.success(request, "This item was added to your cart.")
         return redirect("order-summary", slug=slug)
+    
 
 @login_required
 def remove_single_item_from_cart(request, slug):
@@ -201,22 +225,42 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.warning(request, "You do not have an active order")
         return redirect("order-summary", slug=slug)
-
+    
+    
+@login_required
+def checkOut(request):
+    try:
+        form = ShippingAddressForm()
+        order = Order.objects.get(user=request.user, ordered=False)
+        profile = Profile.objects.filter(user=request.user)
+        for order_item in order.items.all():
+            if order_item.item.item_quantity >= order_item.quantity:
+                return render(request, 'ecommpage/checkout.html', {'object':order, 'form': form, 'profile': profile})
+            else:
+                messages.warning(request, 'Out of stock!')
+                return redirect('order-summary')
+    except ObjectDoesNotExist:
+        messages.error(request, "You do not have an active order")
+        return redirect('store')
+    
+    
+@login_required
 def paymentComplete(request):
-    body = json.loads(request.body)
-    orderitem = OrderItem.objects.get(user=request.user, ordered=False)
-    order = Order.objects.get(id=body['orderID'])
-    for order_item in order.items.all():
-        print(order_item.item.item_quantity)
-    orderitem.ordered = True
-    order.ordered =True
-    order.total_price = body['total']
-    orderitem.save()
-    order.save()
-    messages.success(request, "Order has been processed!")
-    return JsonResponse('Payment Complete', safe=False)
+    try:
+        body = json.loads(request.body)
+        order = Order.objects.get(id=body['orderID'])
+        for order_item in order.items.all():
+            order_item.item.item_quantity -= order_item.quantity
+            order_item.ordered = True
+            order_item.save()
+        order.ordered = True
+        order.total_price = body['total']
+        order.save()
+        messages.success(request, "Order has been processed!")
+        return JsonResponse('Payment Complete', safe=False)
+    except:
+        messages.warning(request, "Payment did not go throuh")
+        return redirect('order-summary')
 
-
-def history(request):
-    order = Order.objects.filter(user=request.user, ordered=True)
-    return render(request, 'ecommpage/history.html', {'order':order})
+    
+    
