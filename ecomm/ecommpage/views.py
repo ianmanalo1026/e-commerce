@@ -251,6 +251,7 @@ def paymentComplete(request):
         order = Order.objects.get(id=body['orderID'])
         for order_item in order.items.all():
             order_item.item.item_quantity -= order_item.quantity
+            order_item.item.save()
             order_item.ordered = True
             order_item.save()
         order.ordered = True
