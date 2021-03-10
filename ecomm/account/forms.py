@@ -41,12 +41,6 @@ class ProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     last_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     email = forms.EmailField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    phone_number = forms.CharField(max_length=13, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    street_address = forms.CharField(max_length=300, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    provice = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    city = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    country = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    zip_code = forms.CharField(max_length=12, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     
     def __init__(self, *args, **kw):
         super(ProfileForm, self).__init__(*args, **kw)
@@ -60,11 +54,4 @@ class ProfileForm(forms.ModelForm):
             "first_name",
             "last_name",
             "email",
-            "phone_number",
-            "photo",
-            "street_address",
-            "provice",
-            "city",
-            "country",
-            "zip_code"
         ]

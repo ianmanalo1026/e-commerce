@@ -1,17 +1,22 @@
 from django.shortcuts import redirect, render ,get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+
 from django.views.generic import (ListView, 
                                   DetailView, 
                                   CreateView, 
                                   UpdateView, 
                                   DeleteView)
-from .models import Item, Order, OrderItem
+from .models import (Item, 
+                     Order, 
+                     OrderItem, 
+                     ShippingAddress)
 from .forms import (ItemCreateForm, 
                     ItemUpdateForm, 
                     ShippingAddressForm)
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 from django_filters.views import FilterView
 from account.models import Profile
 from .filters import ItemFilter
@@ -78,7 +83,7 @@ class HistoryListView(LoginRequiredMixin, ListView):
     success_url = "/"
     
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user, ordered=True)
+        return Order.objects.filter(user=self.request.user, ordered=True).order_by('-ordered_date')
     
     
 class HistoryDetailView(LoginRequiredMixin, DetailView):
@@ -86,11 +91,12 @@ class HistoryDetailView(LoginRequiredMixin, DetailView):
     template_name = "ecommpage/history_detail.html"
     success_url = "/"
     
-    def get_queryset(self):
-        order = Order.objects.filter(user=self.request.user, ordered=True)
-        profile = Profile.objects.filter(user=self.request.profile.user)
-        context = {'order':order, 'profile':profile}
-        return render(self.request, self.template_name, context)
+    def get_context_data(self, *args, **kwargs):
+        context = super(HistoryDetailView, self).get_context_data(**kwargs)
+        context['order'] = Order.objects.filter(user=self.request.user, ordered=True)
+        context['address'] = ShippingAddress.objects.get(user=self.request.user)
+        return context
+
  
     
 @login_required
@@ -230,12 +236,11 @@ def remove_single_item_from_cart(request, slug):
 @login_required
 def checkOut(request):
     try:
-        form = ShippingAddressForm()
+        shipping_address = ShippingAddress.objects.get(user=request.user)
         order = Order.objects.get(user=request.user, ordered=False)
-        profile = Profile.objects.filter(user=request.user)
         for order_item in order.items.all():
             if order_item.item.item_quantity >= order_item.quantity:
-                return render(request, 'ecommpage/checkout.html', {'object':order, 'form': form, 'profile': profile})
+                return render(request, 'ecommpage/checkout.html', {'object':order, 'shipping_address': shipping_address})
             else:
                 messages.warning(request, 'Out of stock!')
                 return redirect('order-summary')
@@ -249,11 +254,14 @@ def paymentComplete(request):
     try:
         body = json.loads(request.body)
         order = Order.objects.get(id=body['orderID'])
+        address = ShippingAddress.objects.get(user=request.user)
         for order_item in order.items.all():
             order_item.item.item_quantity -= order_item.quantity
             order_item.item.save()
             order_item.ordered = True
             order_item.save()
+        order.shipping_address = address.get_full_address
+        order.save()
         order.ordered = True
         order.total_price = body['total']
         order.save()

@@ -49,15 +49,14 @@
     <a href="{% url 'store' %}"><h3 class="text-center">Check out more books</h3></a>
     {% for item in object_list%}
     {% if item.item_quality != 0 %}
-
       <div class="col-lg-4 col-md-6 offset-md-0 offset-sm-1 col-sm-10 offset-sm-1 my-lg-0 my-2">
-          <div class="card my-3"> <img class="card-img-top" src="{{ item.img.url }}">
+          <div class="card my-3 shadow"> <img class="card-img-top" src="{{ item.img.url }}">
               <div class="card-body">
-                  <div class="d-flex align-items-start justify-content-between">
+                  <div class="d-flex align-items-start justify-content-between text-dark">
                       <div class="d-flex flex-column">
                           <div class="h5 font-weight-bold"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></div>
                           <div class="h6 font-weight-bold">{{item.category}}</a></div>
-                          <div class="text-muted">₱ {{item.price|floatformat:2}}</div>
+                          <div class="text-dark">₱ {{item.price|floatformat:2}}</div>
                           <hr>
                           <div class="p font-weight-bold">{{item.description|truncatechars:100}}</a></div>
                       </div>

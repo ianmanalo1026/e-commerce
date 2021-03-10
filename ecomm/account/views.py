@@ -6,6 +6,7 @@ from .forms import (UserRegisterForm,
 from django.contrib.auth.mixins import (LoginRequiredMixin, 
                                         UserPassesTestMixin)
 from .models import Profile
+from ecommpage.models import ShippingAddress
 from django.contrib.auth import login, logout, authenticate
 from django.views.generic import (CreateView, 
                                   FormView, 
@@ -54,6 +55,10 @@ class ProfileView(LoginRequiredMixin, DetailView):
     template_name = "account/profile.html"
     success_url = "/"
     
+    # def get_queryset(self):
+    #     shipping_address = ShippingAddress.objects.get(user=self.request.user)
+    #     return render(self.request, self.template_name, {'shipping':shipping_address})     
+    
     
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
@@ -69,6 +74,6 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return False
 
         
-class StaffListView(ListView):
+class StaffListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'account/staff.html'

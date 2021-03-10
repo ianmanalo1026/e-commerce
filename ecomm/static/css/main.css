@@ -4,9 +4,11 @@ html {
 }
 
 body{
-    background: -webkit-linear-gradient(left, #fbfbfb, #ffffff);
+    background: -webkit-linear-gradient(left, #f8f5f5, #e6e1e1);
     margin-bottom: 60px;
+    font-family: 'Montserrat', sans-serif;
 }
+
 
 footer {
     position: absolute;

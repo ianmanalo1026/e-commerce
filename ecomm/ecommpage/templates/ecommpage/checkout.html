@@ -3,9 +3,9 @@
 {% block content %}
 <div class="container">
   <div class="row">
-        <div class="col-6">
+    <div class="col-lg-8 col-md-10 col-sm-12 mt-5">
         <div class="container text-center">
-        <table class="table table-hover">
+        <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -35,7 +35,19 @@
           </table>
         </div>
       </div>
-      <div class="col-6 mt-3">
+
+      <div class="clearfix col-lg-4 col-md-10 col-sm-12 p-3 mt-3 border border-secondary">
+          <div class="container">
+            <h3>Shipping & Billing</h3>
+            <hr>
+            <div class="my-4">
+            <h6><strong>Name:</strong> {{shipping_address.user.first_name}} {{shipping_address.user.last_name}}</h6>
+            <h6><strong>Phone Number:</strong> {{shipping_address.get_phone_number}}</h6>
+            <h6><strong>Shipping address:</strong> {{shipping_address.get_full_address}}</h6>
+            <small><a href="/">Update</a></small>
+            </div>
+            <hr>
+          </div>
         <div id="paypal-button-container"></div>
           <!-- Include the PayPal JavaScript SDK -->
           <script src="https://www.paypal.com/sdk/js?client-id=AXbPL2lRLTobw-HLnY0VfsSaHhpLeNwa0cH0e-EqEsVmlZFHdlaD7Gqqznn-pQDFDPBtI6xWmMGkmjct&currency=PHP"></script>

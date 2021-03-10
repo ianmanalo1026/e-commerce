@@ -3,8 +3,7 @@ from django.conf import settings
 from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 from django.utils.text import slugify
-from django_countries.fields import CountryField
-from account.models import Profile
+from phonenumber_field.modelfields import PhoneNumberField 
 import random
 
 
@@ -90,7 +89,26 @@ class OrderItem(models.Model):
     def get_quantity(self):
         return self.quantity
     
-      
+class ShippingAddress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    phone_number = PhoneNumberField(null=True, blank=True)
+    street_address = models.CharField(max_length=300)
+    province = models.CharField(max_length=300)
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return str(self.user)
+    
+    def get_phone_number(self):
+        return self.phone_number
+    
+    @property  
+    def get_full_address(self):
+        return f"{self.street_address}, {self.province}, {self.city}, {self.country}, {self.zip_code}"
+        
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
@@ -98,12 +116,11 @@ class Order(models.Model):
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     total_price = models.FloatField(null=True, blank=True)
-    shipping_address = models.CharField(max_length=250)
+    shipping_address = models.CharField(max_length=500)
     reference_number = models.CharField(max_length=10, null=True, blank=True, default=create_new_ref_number())
     
     def get_absolute_url(self):
         return reverse("history-detail", kwargs={"pk": self.pk})
-    
 
     def __str__(self):
         return self.reference_number
@@ -115,14 +132,3 @@ class Order(models.Model):
         return total
     
     
-class ShippingAddress(models.Model):
-    user = models.ForeignKey(Profile,
-                             on_delete=models.CASCADE)
-    street_address = models.CharField(max_length=300)
-    province = models.CharField(max_length=300)
-    city = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    zip_code = models.CharField(max_length=10)
-    
-    def __str__(self):
-        return self.user

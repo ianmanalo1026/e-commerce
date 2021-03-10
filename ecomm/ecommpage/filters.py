@@ -13,7 +13,7 @@ class ItemFilter(django_filters.FilterSet):
                      widget=TextInput(attrs=
                     {   'placeholder': 'Search Book Here', 
                         'class': 'form-control',
-                        'size': 10,
+                        'size': 100,
                     }
                     ))
     category = ChoiceFilter(choices=CATEGORY_CHOICES,  
