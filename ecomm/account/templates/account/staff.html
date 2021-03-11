@@ -12,6 +12,7 @@
             <th scope="col">Last Name</th>
             <th scope="col">Email</th>
             <th scope="col">Staff</th>
+            <th scope="col">Update Staff</th>
             <th scope="col">Active</th>
         </tr>
         </thead>
@@ -23,10 +24,13 @@
           <td>{{staff.user.last_name}}</td>
           <td>{{staff.user.email}}</td>
           <td>{{staff.user.is_staff}}</td>
+          <td>{{staff.user.is_staff}}</td>
           <td>{{staff.user.is_active}}</td>
           </tr>
           {% endfor %}
-  </div>
+        </tbody>
+      </table>
+    </div>
 {% endblock %}
 
 

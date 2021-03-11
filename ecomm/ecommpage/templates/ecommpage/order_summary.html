@@ -9,8 +9,8 @@
         <th scope="col">#</th>
         <th scope="col">Item</th>
         <th scope="col">Quantity</th>
+        <th scope="col">Add/Remove</th>
         <th scope="col">Price</th>
-        <th scope="col">Edit</th>
         <th scope="col">Total Price</th>
 
       </tr>
@@ -21,8 +21,8 @@
         <th scope="row">{{forloop.counter}}</th>
         <td>{{order_item.item.title}}</td>
         <td>{{order_item.quantity}}</td>
+        <td><a href="{% url 'add_single_item_to_cart' order_item.item.slug %}"><i class="fas fa-lg fa-plus-square"></i></a> <a href="{% url 'remove_single_item_from_cart' order_item.item.slug %}"><i class="fas fa-lg fa-minus-square"></i></a></td>
         <td>₱ {{order_item.item.price}}</td>
-        <td><a href="{{order_item.get_add_single_item_to_cart_url}}"><i class="fas fa-plus"></a></i>  <a href="{{get_remove_single_item_from_cart_url}}"><i class="fas fa-minus"></i></a></td>
         <td>₱ {{order_item.get_total_item_price}}</td>
       </tr>
       {% endfor %}

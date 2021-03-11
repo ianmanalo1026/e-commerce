@@ -12,7 +12,7 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                             on_delete=models.CASCADE)
     since = models.DateTimeField(auto_now_add=True)
-    photo = models.ImageField(upload_to=get_upload_path, blank=True, null=True, default='images/default.png')
+    photo = models.ImageField(upload_to=get_upload_path, blank=True, null=True,  default='images/default.png')
     phone_number = PhoneNumberField(null=True, blank=True)
     street_address = models.CharField(max_length=300)
     province = models.CharField(max_length=300)
