@@ -1,6 +1,5 @@
 from django import forms
-from .models import Item, ShippingAddress
-
+from .models import Item
 class ItemCreateForm(forms.ModelForm):
     class Meta:
         model = Item
@@ -40,23 +39,3 @@ class ItemUpdateForm(forms.ModelForm):
         }
         
         
-class ShippingAddressForm(forms.ModelForm):
-    
-    class Meta:
-        model = ShippingAddress
-        fields = [
-            'phone_number',
-            'street_address',
-            'province',
-            'city',
-            'country',
-            'zip_code',
-        ]
-        widgets = {
-            'phone_number': forms.TextInput(attrs={'class':'form-control'}),
-            'street_address': forms.TextInput(attrs={'class':'form-control'}),
-            'province': forms.Textarea(attrs={'class':'form-control'}),
-            'city': forms.TextInput(attrs={'class':'form-control'}),
-            'country': forms.TextInput(attrs={'class':'form-control'}),
-            'zip_code': forms.TextInput(attrs={'class':'form-control'}),
-        }

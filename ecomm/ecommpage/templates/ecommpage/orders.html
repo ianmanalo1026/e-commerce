@@ -1,0 +1,39 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content%}
+<div class="container">
+  <div class="my-4"><h1 class='mb-2'><i class="fas fa-book-open"></i> Libro</h1></div>
+<table class="table table-striped text-center">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Reference Number</th>
+        <th scope="col">Name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Status</th>
+
+      </tr>
+    </thead>
+    <tbody>
+        {% for order_item in object_list %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{order_item.reference_number}}</td>
+        <td>{{order_item.user}}</td>
+        <td>{{order_item.ordered_date}}</td>
+        <td>{% if order_item.delivered %}
+          <strong>Delivered</strong>
+          {% else %}
+          <strong>On Transit</strong>
+        {% endif %}
+      </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+</div>
+
+
+

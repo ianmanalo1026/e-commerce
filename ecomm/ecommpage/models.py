@@ -88,26 +88,7 @@ class OrderItem(models.Model):
     
     def get_quantity(self):
         return self.quantity
-    
-class ShippingAddress(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    phone_number = PhoneNumberField(null=True, blank=True)
-    street_address = models.CharField(max_length=300)
-    province = models.CharField(max_length=300)
-    city = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    zip_code = models.CharField(max_length=10)
-    
-    def __str__(self):
-        return str(self.user)
-    
-    def get_phone_number(self):
-        return self.phone_number
-    
-    @property  
-    def get_full_address(self):
-        return f"{self.street_address}, {self.province}, {self.city}, {self.country}, {self.zip_code}"
+
         
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -117,7 +98,8 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     total_price = models.FloatField(null=True, blank=True)
     shipping_address = models.CharField(max_length=500)
-    reference_number = models.CharField(max_length=10, null=True, blank=True, default=create_new_ref_number())
+    reference_number = models.CharField(max_length=10, null=True, blank=True, unique=True, default=create_new_ref_number())
+    delivered = models.BooleanField(default=False)
     
     def get_absolute_url(self):
         return reverse("history-detail", kwargs={"pk": self.pk})

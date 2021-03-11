@@ -1,10 +1,43 @@
 {% extends 'account/base.html' %}
 {% load static%}
 {% block content%}
-{{object.user.first_name}}
-{{object.user.last_name}}
-{{object.user.email}}
-{{object.since}}
+<div class="container">
+    <div class="row ">
+        <div class="col-lg-3 border border-2 text-center shadow ml-2">
+            <div class="container my-3">
+                <img src="{{ object.photo.url }}" alt="" class="img-fluid img-thumbnail">
+            </div>
+            <div class="container my-3">
+                <h5><strong>{{ object.user.first_name|capfirst }} {{ object.user.last_name|capfirst }}</strong></h5>
+            </div>
+        </div>
+        <div class="col-lg-9 border border-2 shadow">
+
+            <h3 class="mt-2">Shipping Address and Contact</h3>
+            <hr>
+            <div class="container mt-4">
+                <h6><strong>Name:</strong> {{ object.user.first_name|capfirst }} {{ object.user.last_name|capfirst }}</h6>
+            </div>
+            <hr>
+            <div class="container mt-4">
+                <h6><strong>Email:</strong> {{ object.user.email}}</h6>
+            </div>
+            <hr>
+            <div class="container mt-4">
+                <h6><strong>Phone Number:</strong> {{ object.get_phone_number }}</h6>
+            </div>
+            <hr>
+            <div class="container mt-4">
+                <h6><strong>Shipping Address: </strong>{{ object.get_full_address }}</h6>
+            </div>
+            <hr>
+            <a href="{% url 'account:profile-update' slug=user.profile.slug %}" class="btn btn-success btn-md my-0 p">
+                <i class="fas fa-pen"></i> Update
+              </a>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 
 

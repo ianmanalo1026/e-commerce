@@ -2,9 +2,12 @@
 
 {% block content %}
 <div class="container">
+  
   <div class="row">
     <div class="col-lg-8 col-md-10 col-sm-12 mt-5">
+      <div class="mb-2"><h1><i class="fas fa-book-open"></i> Libro</h1></div>
         <div class="container text-center">
+          
         <table class="table table-striped">
             <thead>
               <tr>
@@ -12,7 +15,6 @@
                 <th scope="col">Item</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
-                <th scope="col">Edit</th>
                 <th scope="col">Total Price</th>
               </tr>
             </thead>
@@ -23,12 +25,11 @@
                 <td>{{order_item.item.title}}</td>
                 <td>{{order_item.quantity}}</td>
                 <td>₱ {{order_item.item.price}}</td>
-                <td><a href="{{order_item.get_add_single_item_to_cart_url}}"><i class="fas fa-plus"></a></i>  <a href="{{get_remove_single_item_from_cart_url}}"><i class="fas fa-minus"></i></a></td>
                 <td>₱ {{order_item.get_total_item_price}}</td>
               </tr>
               {% endfor %}
               <tr>
-                <td colspan="5"><strong>Order Total</strong></td>
+                <td colspan="4"><strong>Order Total</strong></td>
                 <td><strong>₱ {{object.get_total}}</strong></td>
               </tr>
             </tbody>
@@ -44,7 +45,7 @@
             <h6><strong>Name:</strong> {{shipping_address.user.first_name}} {{shipping_address.user.last_name}}</h6>
             <h6><strong>Phone Number:</strong> {{shipping_address.get_phone_number}}</h6>
             <h6><strong>Shipping address:</strong> {{shipping_address.get_full_address}}</h6>
-            <small><a href="/">Update</a></small>
+            <small><a href="{% url 'account:profile-update' slug=user.profile.slug %}">Update</a></small>
             </div>
             <hr>
           </div>

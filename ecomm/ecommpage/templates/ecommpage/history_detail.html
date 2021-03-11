@@ -2,9 +2,13 @@
 {% load static %}
 {% block content%}
 <div class="container">
-    <h5>Name: {{object.user.first_name}} {{object.user.last_name}}</h5>
-    <h5>Date: {{object.ordered_date}}</h5>
-    <h5>Shipping Address: {{object.shipping_address}}</h5>
+  <div class="mb-5"><h1><i class="fas fa-book-open"></i> Libro</h1></div>
+  <div class="my-5">
+    <h5><strong>Name:</strong> {{object.user.first_name}} {{object.user.last_name}}</h5>
+    <h5><strong>Date:</strong>{{object.ordered_date}}</h5>
+    <h5><strong>Phone Number:</strong> {{request.user.profile.phone_number}}</h5>
+    <h5><strong>Address:</strong>{{object.shipping_address}}</h5>
+  </div>
 
 <table class="table table-striped text-center">
     <thead>

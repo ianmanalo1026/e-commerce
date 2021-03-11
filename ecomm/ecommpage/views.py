@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.views.generic import (ListView, 
                                   DetailView, 
                                   CreateView, 
@@ -11,11 +10,9 @@ from django.views.generic import (ListView,
                                   DeleteView)
 from .models import (Item, 
                      Order, 
-                     OrderItem, 
-                     ShippingAddress)
+                     OrderItem)
 from .forms import (ItemCreateForm, 
-                    ItemUpdateForm, 
-                    ShippingAddressForm)
+                    ItemUpdateForm)
 from django.contrib.auth.models import User
 from django_filters.views import FilterView
 from account.models import Profile
@@ -94,10 +91,14 @@ class HistoryDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(HistoryDetailView, self).get_context_data(**kwargs)
         context['order'] = Order.objects.filter(user=self.request.user, ordered=True)
-        context['address'] = ShippingAddress.objects.get(user=self.request.user)
         return context
 
- 
+
+class OrderStatus(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = "ecommpage/orders.html"
+    success_url = "/"
+    
     
 @login_required
 def add_to_cart(request, slug):
@@ -236,7 +237,11 @@ def remove_single_item_from_cart(request, slug):
 @login_required
 def checkOut(request):
     try:
-        shipping_address = ShippingAddress.objects.get(user=request.user)
+        shipping_address = Profile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        messages.warning(request, 'Please update first your billing address')
+        return redirect('order-summary')
+    try:
         order = Order.objects.get(user=request.user, ordered=False)
         for order_item in order.items.all():
             if order_item.item.item_quantity >= order_item.quantity:
@@ -248,13 +253,12 @@ def checkOut(request):
         messages.error(request, "You do not have an active order")
         return redirect('store')
     
-    
 @login_required
 def paymentComplete(request):
     try:
         body = json.loads(request.body)
         order = Order.objects.get(id=body['orderID'])
-        address = ShippingAddress.objects.get(user=request.user)
+        address = Profile.objects.get(user=request.user)
         for order_item in order.items.all():
             order_item.item.item_quantity -= order_item.quantity
             order_item.item.save()

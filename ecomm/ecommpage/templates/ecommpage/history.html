@@ -15,12 +15,13 @@
         {% for item in object_list%}
          <tr>
            <th scope="row">{{forloop.counter}}</th>
-           <td>{{item.reference_number}}</td>
+           <td><a href="{{item.get_absolute_url}}">{{item.reference_number}}</a></td>
            <td>{{item.user.first_name}} {{item.user.last_name}}</td>
            <td>{{item.ordered_date}}</td>
          </tr>
          {% endfor %}
        </tbody>
      </table>
+</div>
 {% endblock %}
 

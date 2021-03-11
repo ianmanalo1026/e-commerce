@@ -37,10 +37,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'create' %}"><i class="far fa-id-card"></i>Create Item</a>
+                    <a class="nav-link active text-dark" href="{% url 'create' %}"><i class="far fa-id-card"></i> Create Item</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'account:staff' %}"><i class="fas fa-sign-out-alt"></i> Staff</a>
+                    <a class="nav-link active text-dark" href="{% url 'account:staff' %}"><i class="fas fa-sign-out-alt"></i> Staff</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active text-dark" href="{% url 'order-status' %}"><i class="fas fa-sign-out-alt"></i> Orders</a>
                   </li>
                 </ul>
               {% endif %}
@@ -56,13 +59,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'account:profile' slug=user.profile.slug %}"><i class="far fa-id-card"></i> Profile</a>
+                    <a class="nav-link active text-dark" href="{% url 'account:profile' slug=user.profile.slug %}"><i class="far fa-id-card"></i> Profile</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'history' %}"><i class="fas fa-receipt"></i> History</a>
+                    <a class="nav-link active text-dark" href="{% url 'history' %}"><i class="fas fa-receipt"></i> History</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'account:signout' %}"><i class="fas fa-sign-out-alt"></i> Signout</a>
+                    <a class="nav-link active text-dark" href="{% url 'account:signout' %}"><i class="fas fa-sign-out-alt"></i> Signout</a>
                   </li>
                   {% endif %}
                 </ul>
